@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CV Analyzer
 
-## Getting Started
+A web application designed to streamline the job application process by providing tools for CV analysis, job management, and user authentication. This platform helps users analyze their CVs against job descriptions, save relevant job postings, and manage their application progress.
 
-First, run the development server:
+## Features
+
+*   **CV Analysis**: Upload your CV and analyze its compatibility with specific job descriptions.
+*   **Job Management**: Save job postings, track application statuses, and organize your job search.
+*   **User Authentication**: Secure user registration and login powered by NextAuth.js.
+*   **Dashboard**: A personalized dashboard to view your application overview and insights.
+*   **File Upload**: Easy-to-use interface for uploading CVs and other relevant documents.
+
+## Technologies Used
+
+*   **Framework**: Next.js (React)
+*   **Language**: TypeScript
+*   **Database ORM**: Prisma
+*   **Authentication**: NextAuth.js
+*   **Styling**: Tailwind CSS
+*   **Package Manager**: npm
+
+## Setup Instructions
+
+Follow these steps to get the project up and running on your local machine.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/cv-analyzer.git
+cd cv-analyzer
+```
+
+### 2. Install Dependencies
+
+Install the necessary Node.js packages using npm:
+
+```bash
+npm install
+```
+
+### 3. Environment Variables
+
+Create a `.env` file in the root of the project based on `.env.example` (you might need to create this example file if it doesn't exist). Fill in the required environment variables, such as database connection strings and NextAuth.js secrets.
+
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/cv_analyzer_db"
+NEXTAUTH_SECRET="YOUR_NEXTAUTH_SECRET"
+NEXTAUTH_URL="http://localhost:3000"
+# Add any other necessary environment variables here
+```
+
+### 4. Database Setup
+
+This project uses Prisma for database management. Apply the database migrations to set up your database schema:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+If you make changes to `prisma/schema.prisma`, you will need to run `npx prisma migrate dev` again to apply those changes.
+
+### 5. Run the Development Server
+
+Start the Next.js development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **Register/Login**: Create an account or log in to access the application's features.
+*   **Upload CV**: Navigate to the CV analysis section to upload your CV.
+*   **Analyze**: Provide a job description to analyze your CV's suitability.
+*   **Manage Jobs**: Explore and save job postings, and update their status in your dashboard.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
