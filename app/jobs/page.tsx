@@ -2,6 +2,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
 
 interface Job {
@@ -14,33 +16,39 @@ interface Job {
 }
 
 export default function JobsPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [suggestedJobs, setSuggestedJobs] = useState<Job[]>([]);
   const [savedJobs, setSavedJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    // Fetch suggested jobs (this is just a placeholder, you would fetch this based on the CV analysis)
-    const fetchSuggestedJobs = async () => {
-      const res = await fetch('/api/jobs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: 'Software Engineer' }), // Placeholder query
-      });
-      const data = await res.json();
-      setSuggestedJobs(data.data || []);
-    };
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    } else if (status === 'authenticated') {
+      // Fetch suggested jobs (this is just a placeholder, you would fetch this based on the CV analysis)
+      const fetchSuggestedJobs = async () => {
+        const res = await fetch('/api/jobs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query: 'Software Engineer' }), // Placeholder query
+        });
+        const data = await res.json();
+        setSuggestedJobs(data.data || []);
+      };
 
-    // Fetch saved jobs
-    const fetchSavedJobs = async () => {
-      const res = await fetch('/api/jobs/saved');
-      const data = await res.json();
-      setSavedJobs(data.jobs || []);
-    };
+      // Fetch saved jobs
+      const fetchSavedJobs = async () => {
+        const res = await fetch('/api/jobs/saved');
+        const data = await res.json();
+        setSavedJobs(data.jobs || []);
+      };
 
-    fetchSuggestedJobs();
-    fetchSavedJobs();
-  }, []);
+      fetchSuggestedJobs();
+      fetchSavedJobs();
+    }
+  }, [status, router]);
 
   const handleSaveJob = async (job: Job) => {
     await fetch('/api/jobs/save', {
@@ -55,6 +63,14 @@ export default function JobsPage() {
     const data = await res.json();
     setSavedJobs(data.jobs || []);
   };
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <div>
