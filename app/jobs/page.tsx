@@ -1,7 +1,61 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 
-export default function Jobs() {
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  description: string;
+  url: string;
+}
+
+export default function JobsPage() {
+  const [suggestedJobs, setSuggestedJobs] = useState<Job[]>([]);
+  const [savedJobs, setSavedJobs] = useState<Job[]>([]);
+
+  useEffect(() => {
+    // Fetch suggested jobs (this is just a placeholder, you would fetch this based on the CV analysis)
+    const fetchSuggestedJobs = async () => {
+      const res = await fetch('/api/jobs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: 'Software Engineer' }), // Placeholder query
+      });
+      const data = await res.json();
+      setSuggestedJobs(data.data || []);
+    };
+
+    // Fetch saved jobs
+    const fetchSavedJobs = async () => {
+      const res = await fetch('/api/jobs/saved');
+      const data = await res.json();
+      setSavedJobs(data.jobs || []);
+    };
+
+    fetchSuggestedJobs();
+    fetchSavedJobs();
+  }, []);
+
+  const handleSaveJob = async (job: Job) => {
+    await fetch('/api/jobs/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(job),
+    });
+    // Refresh saved jobs
+    const res = await fetch('/api/jobs/saved');
+    const data = await res.json();
+    setSavedJobs(data.jobs || []);
+  };
+
   return (
     <div>
       <Header />
@@ -11,13 +65,34 @@ export default function Jobs() {
           <div className="mt-8">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Suggested Jobs</h2>
-              {/* Suggested jobs will be displayed here */}
+              <ul>
+                {suggestedJobs.map((job) => (
+                  <li key={job.id} className="border-b py-4">
+                    <h3 className="font-semibold">{job.title}</h3>
+                    <p className="text-gray-600">{job.company} - {job.location}</p>
+                    <p className="text-sm mt-2">{job.description}</p>
+                    <div className="mt-2">
+                      <a href={job.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">View Job</a>
+                      <button onClick={() => handleSaveJob(job)} className="ml-4 px-2 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Save</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           <div className="mt-8">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Saved Jobs</h2>
-              {/* Saved jobs will be displayed here */}
+              <ul>
+                {savedJobs.map((job) => (
+                  <li key={job.id} className="border-b py-4">
+                    <h3 className="font-semibold">{job.title}</h3>
+                    <p className="text-gray-600">{job.company} - {job.location}</p>
+                    <p className="text-sm mt-2">{job.description}</p>
+                    <a href={job.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">View Job</a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
